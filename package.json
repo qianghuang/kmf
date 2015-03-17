@@ -1,0 +1,22 @@
+{
+  "name": "kmf",
+  "version": "0.1.0",
+  "description": "kmf fe tool",
+  "bin": {
+    "kmf": "bin/kmf"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@coding.net:max_hq/kmf.git"
+  },
+  "keywords": [
+    "fe",
+    "tool"
+  ],
+  "author": "qiang.huang",
+  "license": "ISC"
+}
