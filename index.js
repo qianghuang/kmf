@@ -27,12 +27,7 @@ if(cmd === "--help" || cmd === "-h" || cmd === "help") {
 	});
 } else if(cmd === "test") {
 	var testPath = path.join(process.cwd(), "./path/test/kmf");
-	console.log(path.join(process.cwd(), "./path/test/kmf"));
-	try {
-		fs.mkdirSync(path.join(process.cwd(), "./path/tst/kmf"));
-	} catch(e) {
-		console.info(e.code);
-		console.info(e);
-		console.info(path.dirname(testPath));
-	}
+	var copyPath = path.join(__dirname, "./template/std_webapp/package.json");
+	var destPath = path.join(process.cwd(), "./test/oeif/iefj.js");
+	file.mkDir(destPath);
 }
