@@ -10,6 +10,8 @@ var kmf = {}
 var argv = process.argv;
 var cmd = argv[2];
 var binPath = argv[1];
+var cwd = process.cwd();
+var templatePath = path.join(__dirname, "template");
 
 if(cmd === "--help" || cmd === "-h" || cmd === "help") {
 	help.getHelp();
@@ -27,7 +29,7 @@ if(cmd === "--help" || cmd === "-h" || cmd === "help") {
 	});
 } else if(cmd === "test") {
 	var testPath = path.join(process.cwd(), "./path/test/kmf");
-	var copyPath = path.join(__dirname, "./template/std_webapp/package.json");
-	var destPath = path.join(process.cwd(), "./test/oeif/iefj.js");
-	file.mkDir(destPath);
+	var copyPath = path.join(templatePath, "./std_webapp/");
+	var destPath = path.join(cwd, "./test/");
+	file.copy(copyPath, destPath);
 }
