@@ -28,8 +28,11 @@ if(cmd === "--help" || cmd === "-h" || cmd === "help") {
 		console.log("File \"./test.json\" is created");
 	});
 } else if(cmd === "test") {
+	
 	var testPath = path.join(process.cwd(), "./path/test/kmf");
-	var copyPath = path.join(templatePath, "./std_webapp/");
+	var copyPath = path.join(templatePath, "./std_webapp/a.json");
 	var destPath = path.join(cwd, "./test/");
+	//console.log(file.getFiles(copyPath + "as.json", true));
 	file.copy(copyPath, destPath);
+	file.write(destPath + "abc.txt", "ajfdj", {encoding: "utf-8"});
 }
