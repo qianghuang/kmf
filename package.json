@@ -18,5 +18,8 @@
     "tool"
   ],
   "author": "qiang.huang",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^0.8.0"
+  }
 }

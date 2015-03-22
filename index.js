@@ -18,17 +18,11 @@ if(cmd === "--help" || cmd === "-h" || cmd === "help") {
 } else if(cmd === "-v" || cmd === "--version" || cmd === "version") {
 	help.version();
 } else if(cmd === "init") {
-	console.log("local---" +　__dirname);
-	console.log(argv);
-	var pkgPath = path.join(binPath.replace(new RegExp(process.title +"$"), ""), "../template/std_webapp/package.json");
-	var pkg = fs.readFileSync(pkgPath, "utf-8");
-	console.log(pkg);
-	file.copy(__dirname, "./test/");
-	fs.writeFile(process.cwd()+"/test.json",pkg, function(){
-		console.log("File \"./test.json\" is created");
-	});
+	kmf.init();
 } else if(cmd === "test") {
-	
+	kmf.init();
+	console.log("curfile:" + __dirname);
+	return;
 	var testPath = path.join(process.cwd(), "./path/test/kmf");
 	var copyPath = path.join(templatePath, "./std_webapp/a.json");
 	var destPath = path.join(cwd, "./test/");
