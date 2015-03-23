@@ -20,8 +20,10 @@ if(cmd === "--help" || cmd === "-h" || cmd === "help") {
 } else if(cmd === "init") {
 	kmf.init();
 } else if(cmd === "test") {
+	
 	kmf.init();
 	console.log("curfile:" + __dirname);
+	
 	return;
 	var testPath = path.join(process.cwd(), "./path/test/kmf");
 	var copyPath = path.join(templatePath, "./std_webapp/a.json");
