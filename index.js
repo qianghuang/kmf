@@ -9,7 +9,7 @@ var kmf = {}
 
 var argv = process.argv;
 var cmd = argv[2];
-var binPath = argv[1];
+var argv3 = argv.slice(3);
 var cwd = process.cwd();
 var templatePath = path.join(__dirname, "template");
 
@@ -21,17 +21,20 @@ if(cmd === "--help" || cmd === "-h" || cmd === "help") {
 	help.version();
 } else if(cmd === "init") {
 	kmf.init();
+} else if(cmd === "dev") {
+	var spawn = require("./lib/spawn.js");
+	
 } else if(cmd === "test") {
-	
-	var exec = require("child_process").spawn;
-	
+	console.log(argv3);
+	var exec = require("child_process").exec;
 	var devPath = path.join(cwd, "./test"); 
-	
-	console.log(path.relative(cwd + "/lib", devPath));
-	process.chdir(devPath);
+	//process.chdir(devPath);
 	var spawn = require("./lib/spawn.js");
 	
 	//console.log(process.cwd());
+	exec("node kmf --help", function(error, stdout, stderr){
+		console.log(stdout);
+	});
 	return;
 	
 	spawn('dir',[], {

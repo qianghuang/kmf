@@ -1,1 +1,1 @@
-D:\workspace\kmf
+d:\workspace\kmf\bin
