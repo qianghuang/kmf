@@ -22,6 +22,5 @@ if(cmd === "--help" || cmd === "-h" || cmd === "help") {
 	kmf.init();
 } else {
 	var tools = "./tools/kmf-"+ cmd;
-	console.log(__dirname);
 	require(tools);
 }
