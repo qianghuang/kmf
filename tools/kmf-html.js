@@ -1,3 +1,8 @@
+/*!
+ * 将shtml转化成html
+ * 并将静态资源地址转化为http://code.enhance.cn
+ *  
+ */
 var file  = require("../lib/file.js")
 ,	path  = require("path")
 ,	argv  = process.argv.slice(3)
@@ -15,16 +20,17 @@ tRelativePath = argv[1] || sRelativePath;
 sourcePath = path.join(cwd, sRelativePath);
 targetPath = path.join(cwd, tRelativePath);
 sourceFiles = file.getFiles(sourcePath);
-console.log(sourceFiles);
+
 sourceFiles.forEach(function(filename){
 	var content
 	,	extname = path.extname(filename)
-	,	oName = path.basename(filename, extname)
+	,	outExt  = ".html"
+	,	relFile = path.relative(sourcePath, filename).replace(new RegExp(extname+"$"), outExt)
 	,	dirName = path.dirname(filename)
-	,	newName = oName + ".html"
 	,	regInclude = /<\!--#include .*\"(.*)\"-->/g
-	,	regHost = /(<link.*\"|<img.*\"|url\()(http:\/\/code1.enhance.cn|\/)(.*\"|.*\))/g
+	,	regHost = /(<link.*\"|<img.*\"|url\()(http:\/\/code1.enhance.cn\/|\/)(.*\"|.*\))/g
 	,	onlineHost = "http://code.enhance.cn/"
+	,	targetFile = path.join(targetPath, relFile)
 	;
 	
 	
@@ -36,6 +42,6 @@ sourceFiles.forEach(function(filename){
 			return _childContent;
 		});
 		content = content.replace(regHost, "$1" + onlineHost + "$3");
-		file.write(path.join(targetPath, newName), content, "binary");
+		file.write(targetFile, content, "binary");
 	}
 });
