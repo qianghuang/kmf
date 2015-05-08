@@ -1,0 +1,12 @@
+{
+  "name": "kmf",
+  "description": "the fe tools",
+  "keywords": ['fe'],
+  "homepage": "http://www.kaomanfen.com",
+  "license": "MIT",
+  "moduleType": "globals",
+  "main": [],
+  "ignore": [
+    "/.*"
+  ]
+}
