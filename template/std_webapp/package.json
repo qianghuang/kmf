@@ -1,6 +1,6 @@
 {
-  "name": "course",
-  "description": "test project",
+  "name": "toefl",
+  "description": "toefl main",
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {

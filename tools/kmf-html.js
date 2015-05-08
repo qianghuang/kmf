@@ -21,6 +21,9 @@ sourcePath = path.join(cwd, sRelativePath);
 targetPath = path.join(cwd, tRelativePath);
 sourceFiles = file.getFiles(sourcePath);
 
+if(file.isFile(sourcePath)) {
+	sourcePath = path.dirname(sourcePath);
+}
 sourceFiles.forEach(function(filename){
 	var content
 	,	extname = path.extname(filename)
@@ -28,7 +31,7 @@ sourceFiles.forEach(function(filename){
 	,	relFile = path.relative(sourcePath, filename).replace(new RegExp(extname+"$"), outExt)
 	,	dirName = path.dirname(filename)
 	,	regInclude = /<\!--#include .*\"(.*)\"-->/g
-	,	regHost = /(<link.*\"|<img.*\"|url\()(http:\/\/code1.enhance.cn\/|\/)(.*\"|.*\))/g
+	,	regHost = /(<link.*?\"|<script.*?src.*?|<img.*?\"|base *?\: *?\"|url\()(http:\/\/code1.enhance.cn\/|\/)(.*?\"|.*?\))/g
 	,	onlineHost = "http://code.enhance.cn/"
 	,	targetFile = path.join(targetPath, relFile)
 	;
