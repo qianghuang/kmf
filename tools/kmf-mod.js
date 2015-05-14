@@ -5,6 +5,7 @@ var kmfModule = path.join(__dirname, "../kmf_module");
 var argv  = process.argv.slice(3);
 var cwd = process.cwd();
 var exec = require('child_process').exec;
+var forEach = [].forEach;
 
 function gitCmd(prop, version) {
 	
@@ -16,7 +17,29 @@ function gitCmd(prop, version) {
 	
 	return commonds[prop];
 }
-
+var widget = {
+	list: {},
+	get: function(tags){
+		var self = this;
+		if(tags && Array.isArray(tags))
+		forEach.call(tags, function(cur,index){
+			var listobj = {};
+			cur.match(/(.*?)(_v)(\d{1,2}\.\d{1,2}\.\d{1,2})/g);
+			listobj.version = RegExp.$3;
+			listobj.tag = cur;
+			
+			if(!self.list[RegExp.$1]) {
+				self.list[RegExp.$1] = [listobj];
+			} else {
+				self.list[RegExp.$1].push(listobj);
+			}
+			console.log(RegExp.$1);
+			console.log(RegExp.$2);
+			console.log(RegExp.$3);
+		});
+		console.log(self.list["usercard"]);
+	}
+};
 function isNew(gitPath) {
 	var packedFile   = "./.git/packed-refs"
 	,	originMaster = "./.git/refs/remotes/origin/master"
@@ -59,11 +82,13 @@ if(file.exists(kmfModule)) {
 	console.log("checking...");
 	exec(gitCmd("updateRemote"), function() {
 		if(isNew(kmfModule)) {
-			exec("git tag", function() {
-				//exec(gitCmd("switchMaster"));		
+			exec("git tag", function(error, stdout, stderr) {
+				//console.log(stdout.match(/.*?\d{1,2}\.\d{1,2}\.\d{1,2}/g));
+				widget.get(stdout.match(/(.*?)(_v)(\d{1,2}\.\d{1,2}\.\d{1,2})/g));	
 			});
 		} else {
 			console.log("local is old!");
+			exec("git pull");
 		}
 	});
 	return ;
