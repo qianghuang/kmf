@@ -22,5 +22,10 @@ if(cmd === "--help" || cmd === "-h" || cmd === "help") {
 	kmf.init();
 } else {
 	var tools = "./tools/kmf-"+ cmd;
-	require(tools);
+	if(!file.exists(tools + ".js")) {
+		console.log("不支持此命令，来吧，创建一个吧！");
+		help.getHelp();
+	} else {
+		require(tools);
+	}
 }

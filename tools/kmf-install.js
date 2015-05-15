@@ -1,6 +1,7 @@
 var spawn = require("../lib/spawn.js");
 var file = require("../lib/file.js");
 var path = require("path");
+var inquirer = require("inquirer");
 var kmfModule = path.join(__dirname, "../kmf_module");
 var argv  = process.argv.slice(3);
 var cwd = process.cwd();
@@ -19,25 +20,80 @@ function gitCmd(prop, version) {
 }
 var widget = {
 	list: {},
+	tags: [],
 	get: function(tags){
 		var self = this;
-		if(tags && Array.isArray(tags))
-		forEach.call(tags, function(cur,index){
-			var listobj = {};
-			cur.match(/(.*?)(_v)(\d{1,2}\.\d{1,2}\.\d{1,2})/g);
-			listobj.version = RegExp.$3;
-			listobj.tag = cur;
-			
-			if(!self.list[RegExp.$1]) {
-				self.list[RegExp.$1] = [listobj];
-			} else {
-				self.list[RegExp.$1].push(listobj);
+		if(tags && Array.isArray(tags) && tags.length > 0 ) {
+			self.tags = tags;
+			forEach.call(tags, function(cur,index){
+				var listobj = {};
+				cur.match(/(.*?)(_v)(\d{1,2}\.\d{1,2}\.\d{1,2})/g);
+				listobj.version = RegExp.$3;
+				listobj.tag = cur;
+				
+				if(!self.list[RegExp.$1]) {
+					self.list[RegExp.$1] = [listobj];
+				} else {
+					self.list[RegExp.$1].push(listobj);
+				}
+			});
+		}
+		return this;
+	},
+	getList: function(widgetName) {
+		var list = this.list
+		,	installList = []
+		,	curWidget = list[widgetName]
+		;
+		
+		if(curWidget) {
+			this.sort(curWidget);
+			forEach.call(curWidget, function(curValue){
+				installList[installList.length] =curValue + "(v" + curValue.version + ")";
+			});
+		} else if(widgetName) {
+			console.log("this widget is not found!");
+		} else {
+			for(var prop in list) {
+				this.sort(list[prop]);
+				installList[installList.length] = prop + "(v" + list[prop][list[prop].length-1].version + ")";
 			}
-			console.log(RegExp.$1);
-			console.log(RegExp.$2);
-			console.log(RegExp.$3);
+		}
+		
+		
+		return installList;
+	},
+	parse: function(){
+		var list = this.list
+		,	installList = []
+		;
+		
+		for(var prop in list) {
+			forEach.call(list[prop], function(curValue){
+				installList[installList.length] = prop + "( v" + curValue.version + " )";
+			});
+		}
+	},
+	sort: function(arr) {
+		arr.sort(function(a, b){
+			var v_a = a.version.split(".");
+			var v_b = b.version.split(".");
+			var result;
+			
+			for(var i = 0, len = v_a.length; i<len; i++) {
+				result = parseInt(v_a[i]) - parseInt(v_b[i]);
+				if(result != 0) {
+					break;
+				}
+			}
+			return result;
 		});
-		console.log(self.list["usercard"]);
+		return this;
+	},
+	isWidget: function(widgetName){
+		if(widgetName !== "" && /^[a-zA-Z][a-zA-Z_-]*/.test(widgetName)) {
+			return true;
+		}
 	}
 };
 function isNew(gitPath) {
@@ -83,8 +139,33 @@ if(file.exists(kmfModule)) {
 	exec(gitCmd("updateRemote"), function() {
 		if(isNew(kmfModule)) {
 			exec("git tag", function(error, stdout, stderr) {
-				//console.log(stdout.match(/.*?\d{1,2}\.\d{1,2}\.\d{1,2}/g));
-				widget.get(stdout.match(/(.*?)(_v)(\d{1,2}\.\d{1,2}\.\d{1,2})/g));	
+				var tags
+				,	installList
+				,	options
+				,	_type
+				;
+				
+				tags = stdout.match(/(.*?)(_v)(\d{1,2}\.\d{1,2}\.\d{1,2})/g);
+				
+				if(widget.isWidget(argv[0])) {
+					installList = widget.get(tags).getList(argv[0]);
+					_type = "list";
+				} else {
+					installList = widget.get(tags).getList();
+					_type = "checkbox";
+				}
+				
+				options = [{
+					type    : _type,
+					name    : "widget",
+					message : "选择的组件是:",
+					choices : installList
+				}];
+				
+				inquirer.prompt(options, function(answers) {
+					console.log(answers.widget);
+				});
+				
 			});
 		} else {
 			console.log("local is old!");
