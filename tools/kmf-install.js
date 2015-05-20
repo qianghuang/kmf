@@ -196,6 +196,8 @@ var widget = {
 		var curWidget
 		,	self = this
 		,	curSelect
+		,	sourcePath
+		,	targetPath 
 		;
 		
 		
@@ -203,7 +205,9 @@ var widget = {
 			curSelect = selectList.shift();
 			curWidget = this.parse(curSelect);
 			gitWidget.branch(curWidget.tag, function(){
-				file.copy("./" + curWidget.widgetName, "./" + cacheFileName + "/" + curWidget.widgetName);
+				sourcePath = path.join(kmfModule, curWidget.widgetName);
+				targetPath = path.join(cwd, cacheFileName, curWidget.widgetName);
+				file.copy(sourcePath, targetPath);
 				gitWidget.master(function(){
 					self.copy.call(self, selectList);
 				});
