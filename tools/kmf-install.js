@@ -8,6 +8,7 @@ var argv  = process.argv.slice(3);
 var cwd = process.cwd();
 var exec = require('child_process').exec;
 var forEach = [].forEach;
+var kmfConfPath = path.join(cwd, "./kmf.json");
 
 function isNew(gitPath) {
 	var packedFile   = "./.git/packed-refs"
@@ -45,6 +46,10 @@ function getPackedOriginMaster(packedFile) {
 	}
 }
 
+/*!
+ * git 相关命令操作
+ * 
+ */
 var gitWidget = {
 	cmd  : function(prop, version) {
 	
@@ -192,7 +197,12 @@ var widget = {
 			return false;
 		}
 	},
-	copy: function(selectList){
+	/**
+	 * 拷贝组件，并自动替换图片资源
+	 * @param {object array} selectList  : widget数组
+	 * @param {object function} callBack : 回调
+	 */
+	copy: function(selectList, callBack){
 		var curWidget
 		,	self = this
 		,	curSelect
@@ -208,6 +218,10 @@ var widget = {
 				sourcePath = path.join(kmfModule, curWidget.widgetName);
 				targetPath = path.join(cwd, cacheFileName, curWidget.widgetName);
 				file.copy(sourcePath, targetPath);
+				self.assetUpdate(targetPath);
+				if(typeof callBack === "function") {
+					callBack();
+				}
 				gitWidget.master(function(){
 					self.copy.call(self, selectList);
 				});
@@ -216,6 +230,13 @@ var widget = {
 			self.copy.call(self, [selectList]);
 		}
 	},
+	/**
+	 * 选择组件
+	 * 执行'git tag' 命令的回调
+	 * @param {Object} error
+	 * @param {Object} stdout
+	 * @param {Object} stderr
+	 */
 	select: function(error, stdout, stderr){
 		var tags
 		,	installList
@@ -248,6 +269,36 @@ var widget = {
 		
 		inquirer.prompt(options, function(answers) {
 			widget.copy.call(widget, answers.widget);
+		});
+	},
+	/**
+	 * 更新图片资源 
+ 	 * @param {Object} dirPath
+	 */
+	assetUpdate: function(dirPath){
+		var files = file.getFiles(dirPath);
+		var kmfConfig = file.readJson(kmfConfPath);
+		var rootDir = kmfConfig["root"];
+		var deployDir = kmfConfig["deploy"];
+
+		files.forEach(function(curVal){
+			if(path.extname(curVal) === ".css") {
+				var content = file.read(curVal, "binary");
+				content = content.replace(/(url\()(.*?(jpg|jpeg|gif|png|svg))(\))/g,function(){
+					var args = arguments
+					,	imgPath
+					,	imgRelPath
+					;
+					
+					imgPath = path.join(path.dirname(curVal), args[2]);
+					imgRelPath = path.relative(rootDir, imgPath);
+					imgRelPath = file.normalPath(path.join(deployDir, imgRelPath));
+					
+					return args[1] + imgRelPath + args[4];
+				});
+				
+				file.write(curVal, content, "binary");
+			}
 		});
 	}
 };
