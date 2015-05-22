@@ -284,7 +284,7 @@ var widget = {
 		files.forEach(function(curVal){
 			if(path.extname(curVal) === ".css") {
 				var content = file.read(curVal, "binary");
-				content = content.replace(/(url\()(.*?(jpg|jpeg|gif|png|svg))(\))/g,function(){
+				content = content.replace(/(url\()(.*?(jpg|jpeg|gif|png|svg))(\))/g, function(){
 					var args = arguments
 					,	imgPath
 					,	imgRelPath
@@ -303,6 +303,10 @@ var widget = {
 	}
 };
 
+if(!file.exists(kmfConfPath)) {
+	console.log('\033[1;31m [error]:\033[21m kmf.json is not found!\033[0m please create it first');
+	return ;
+}
 if(file.exists(kmfModule)) {
 	gitWidget.update(function(){
 		gitWidget.tagList(function(error, stdout, stderr){
