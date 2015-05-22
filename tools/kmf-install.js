@@ -58,7 +58,8 @@ var gitWidget = {
 			update  : "git remote update",
 			master  : "git checkout master",
 			version : "git checkout " + version,
-			tag     : "git tag"
+			tag     : "git tag",
+			pull    : "git pull"
 		};
 		
 		return commonds[prop];
@@ -76,6 +77,10 @@ var gitWidget = {
 		process.chdir(kmfModule);
 		console.log("checking...");
 		
+		exec(cmd, callBack);
+	},
+	pull: function(callBack){
+		var cmd = this.cmd("pull");
 		exec(cmd, callBack);
 	},
 	tagList: function(callBack){
@@ -309,9 +314,17 @@ if(!file.exists(kmfConfPath)) {
 }
 if(file.exists(kmfModule)) {
 	gitWidget.update(function(){
-		gitWidget.tagList(function(error, stdout, stderr){
-			widget.select(error, stdout, stderr);
-		});
+		if(isNew(kmfModule)) {
+			gitWidget.tagList(function(error, stdout, stderr){
+				widget.select(error, stdout, stderr);
+			});
+		} else {
+			gitWidget.pull(function(){
+				gitWidget.tagList(function(error, stdout, stderr){
+					widget.select(error, stdout, stderr);
+				});
+			});
+		}
 	});
 } else {
 	gitWidget.clone(function(){
