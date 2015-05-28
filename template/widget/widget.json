@@ -1,0 +1,9 @@
+{
+	"name":"helloworld",
+	"version": "0.0.1",
+	"description": "widget desc",
+	 "dependencies": {
+	     "jquery": "1.11.0",
+	     "seajs": "2.1.0"
+	}
+}

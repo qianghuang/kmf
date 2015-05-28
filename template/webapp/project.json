@@ -79,7 +79,7 @@
 			dev:{
 				files:{
 					"dist"   : ["./../dist/<%=pkg.name%>/**"]
-				//, "demo"   : ["./../demo/<%=pkg.name%>/**","!./../demo/<%=pkg.name%>/**/*.fetest.*"]
+				  , "demo"   : ["./../demo/<%=pkg.name%>/**","!./../demo/<%=pkg.name%>/**/*.fetest.*"]
 				}
 			},
 			demo: {
@@ -109,7 +109,7 @@
 				}
 			},
 			options:{
-				path:'<%=secret.testPath%>/<%=pkg.name%>',
+				path:'<%=secret.testPath%>/dist',
 				host:'<%=secret.host%>',
 				username:'<%=secret.username%>',
 				password:'<%=secret.password%>',

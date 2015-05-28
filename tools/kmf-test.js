@@ -1,9 +1,8 @@
-var path = require("path");
-var outpath = path.format({
-    root : "/",
-    dir : "/home/user/dir",
-    base : "file.txt",
-    ext : ".txt",
-    name : "file"
-});
-console.log(outpath);
+module.exports = function(argv){
+	var file = require("../lib/file.js");
+	
+	var fs = require("fs");
+	
+	file.rmDir("./cd");
+	
+};
