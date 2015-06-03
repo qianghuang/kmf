@@ -15,22 +15,17 @@ function updateWidget(argv, cwd) {
 	if(file.exists(kmfModule)) {
 		gitWidget.update(function(){
 			if(isNew(kmfModule)) {
-				return widget.update();
-				gitWidget.tagList(function(error, stdout, stderr){
-					widget.select(argv, cwd, error, stdout, stderr);
+				widget.update();
+			} else {
+				gitWidget.pull(function(){
 					widget.update();
 				});
-			} else {
-				/*
-				gitWidget.pull(function(){
-					gitWidget.tagList(function(error, stdout, stderr){
-						widget.select(error, stdout, stderr);
-					});
-				});
-				*/
 			}
 		});
 	} else {
+		gitWidget.clone(function(){
+			widget.update();
+		});
 	}
 }
 function isNew(gitPath) {
