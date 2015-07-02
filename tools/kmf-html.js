@@ -32,7 +32,8 @@ module.exports = function(argv){
 		,	dirName = path.dirname(filename)
 		,	regInclude = /<\!--#include .*\"(.*)\"-->/g
 		,	regHost = /(<link.*?\"|<script.*?src.*?"|<img.*?\"|base *?\: *?\"|url\()(http:\/\/code1.enhance.cn\/|\/)(.*?\"|.*?\))/g
-		,	onlineHost = "http://code.enhance.cn/"
+		,	regDev = new RegExp("http://code1.enhance.cn","g")
+		,	onlineHost = "http://code.enhance.cn"
 		,	targetFile = path.join(targetPath, relFile)
 		;
 		
@@ -44,8 +45,12 @@ module.exports = function(argv){
 				var _childContent = file.read(_childfile, "binary");
 				return _childContent;
 			});
-			content = content.replace(regHost, "$1" + onlineHost + "$3");
+			content = content.replace(regHost, "$1" + onlineHost + "/$3");
+			content = content.replace(regDev, onlineHost);
 			file.write(targetFile, content, "binary");
 		}
 	});
+	
+	
+	
 };
