@@ -42,7 +42,9 @@ module.exports = function(argv){
 	 *  
 	 */
 	function getItem(files) {
+		var cwd = process.cwd();
 		
+		console.log(cwd);
 	}
 	
 	
