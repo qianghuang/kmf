@@ -18,7 +18,7 @@ module.exports = function(argv){
 		build : "kmf dev toefl build",
 		add   : "git add --all :/",
 		commit: "git commit -m ",
-		push  : "git push origin master"
+		push  : "git push"
 	};
 	
 	/**
