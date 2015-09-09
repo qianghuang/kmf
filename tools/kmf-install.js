@@ -14,6 +14,7 @@ module.exports = function(argv){
 	var exec = require('child_process').exec;
 	var forEach = [].forEach;
 	var kmfConfPath = path.join(cwd, cacheFileName, "./kmf.json");
+	var kmfConf = file.readJson(path.join(__dirname, "../config/kmfconfig.json"));
 	var defKmfConf = {
 		"name": "kmfConfig",
 		"root": "",
@@ -66,9 +67,9 @@ module.exports = function(argv){
 	 */
 	var gitWidget = {
 		cmd  : function(prop, version) {
-		
+			
 			var commonds = {
-				clone   : "git clone git@182.92.225.8:/home/git/kmfApp/widget.git " + cacheFileName,
+				clone   : "git clone " + kmfConf.widgetRespository + " " + cacheFileName,
 				update  : "git remote update",
 				master  : "git checkout master",
 				version : "git checkout " + version,

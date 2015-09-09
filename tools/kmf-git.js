@@ -6,6 +6,7 @@ var exec = require("child_process").exec;
 var fs = require("fs");
 var path = require("path");
 var file = require("../lib/file.js");
+var spawn = require("../lib/spawn.js");
 
 module.exports = function(argv){
 	var git
@@ -79,6 +80,9 @@ module.exports = function(argv){
 				}
 			} else if(!file.exists(rootPath)) {
 				newFiles = newFiles.concat(getItem([].concat(dirName)));
+				if(newFiles.length > 1 && newFiles[newFiles.length - 1] == newFiles[newFiles.length - 2]) {
+					newFiles.pop();
+				}
 			}
 		});
 		return newFiles;
@@ -101,7 +105,8 @@ module.exports = function(argv){
 	}
 	
 	function gitPush(callBack) {
-		exec(git.push, callBack);
+		var ls = spawn(git.push);
+		ls.on("close", callBack);
 	}
 	
 	function buildAll(callBack) {
@@ -110,7 +115,6 @@ module.exports = function(argv){
 		gitStatus(function(err, stdout, stderr){
 			if(!err) {
 				items = parseStd(stdout).items;
-				
 				var buildItems = function(items, callBack) {
 					var curItem;
 					var itemPath;
@@ -120,10 +124,15 @@ module.exports = function(argv){
 						itemPath = path.relative(process.cwd(), curItem);
 						itemPath = itemPath === "" ? "./" : itemPath;
 						console.log("building...");
-						exec("kmf dev " + itemPath + " build", function(err, stdout, stderr){
-							console.log(stdout);
+						var cmdLs = spawn("kmf dev " + itemPath + " build");
+						cmdLs.on("data", function(std) {
+							console.log(std);
+						});
+						
+						cmdLs.on("close", function(std) {
 							buildItems(items, callBack);
 						});
+						
 					} else {
 						if(callBack) {
 							callBack();
@@ -143,16 +152,16 @@ module.exports = function(argv){
 		if(argv[0] === "push" && argv[1] === "-m") {
 			msg = argv[2].trim();
 			if(msg !== "") {
+				console.log('git pull...');
 				gitPull(function(){
+					console.log('git pull complate!');
 					buildAll(function(){
-						console.log('execute "git add" command');
+						console.log('git add...');
 						gitAdd(function(){
-							console.log('execute "git commit" command');
+							console.log('git commit ...');
 							gitCommit(msg, function(error, stdout, stderr){
-								console.log('execute "git push" command');
-								gitPush(function(err, stdout, stderr){
-									console.log(stdout);
-								});
+								console.log('git push...');
+								gitPush();
 							});
 						});
 					});
