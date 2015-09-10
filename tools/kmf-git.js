@@ -106,7 +106,9 @@ module.exports = function(argv){
 	
 	function gitPush(callBack) {
 		var ls = spawn(git.push);
-		ls.on("close", callBack);
+		ls.on("close", function(){
+			if(callBack) callBack();
+		});
 	}
 	
 	function buildAll(callBack) {
